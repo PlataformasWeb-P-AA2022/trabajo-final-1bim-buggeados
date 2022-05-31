@@ -1,3 +1,4 @@
+# importar librerias necesarias
 from contextlib import nullcontext
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -5,17 +6,13 @@ from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy import Column, Integer, String, ForeignKey
 
 
-
 # se importa información del archivo configuracion
 from configuration import cadena_base_datos
 
-# se genera en enlace al gestor de base de
-# datos
+# se genera en enlace al gestor de base de datos
 engine = create_engine(cadena_base_datos)
 
 Base = declarative_base()
-
-# Relacion de uno a muchos 
 
 class Provincia(Base):
     __tablename__ = 'provincia'
@@ -23,58 +20,53 @@ class Provincia(Base):
     codigo_div_pol = Column(String(100))
     nombre = Column(String(100))
 
+    # creacion de la relacion que se hara com Canton
     cantones = relationship("Canton", back_populates="provincia")
-    def __repr__(self):
-        return "Provincia: codigo=%s - Nombre=%s"  % (self.codigo, self.nombre)
 
-# Un cantón pertence a un provincia.
+    # representacion que se dara al imprimir el objeto
+    def __repr__(self):
+        return "Provincia: Codigo=%s - Nombre=%s"  % (self.codigo, self.nombre)
+
 class Canton(Base):
     __tablename__ = 'canton'
     id = Column(Integer, primary_key=True)
     codigo_div_pol = Column(String(100))
     cod_distrito = Column(String(100))
     nombre = Column(String(100))
-    # se agrega la columna provincia_id como ForeignKey
+
+    # columna con la llave foranea
     provincia_id = Column(Integer, ForeignKey('provincia.id'))
-    # Mapea la relación entre las clases
-    # Canton puede acceder a las provincias asociados
-    # por la llave foránea
+    # creacion de la relacion que se hara com Provincia
     provincia = relationship("Provincia", back_populates="cantones")
-    # Mapea la relación entre las clases
-    # Canton puede acceder a las parroquias asociados
-    # por la llave foránea
+    # creacion de la relacion que se hara com Parroquia
     parroquia = relationship("Parroquia", back_populates="canton")
 
+    # representacion que se dara al imprimir el objeto
     def __repr__(self):
-        return "Canton: codigo=%s - Nombre=%s " % (
-                    self.codigo,
-                    self.cod_distrito, 
-                    self.nombre)
+        return "Canton: Codigo=%s - Nombre=%s - Codigo Distrito=%s " % (
+                    self.codigo_div_pol,
+                    self.nombre,
+                    self.cod_distrito)
 
-# Una parroquia pertence a un cantón.
 
 class Parroquia(Base):
     __tablename__ = 'parroquia'
     id = Column(Integer, primary_key=True)
     codigo_div_pol = Column(String(100))
     nombre = Column(String(100))
-    # se agrega la columna canton_id como ForeignKey
-    # se hace referencia al id de la entidad canton
+
+    # columna con la llave foranea
     canton_id = Column(Integer, ForeignKey('canton.id'))
-    # Mapea la relación entre las clases
-    # Parroquia tiene una relación con Canton
+    # creacion de la relacion que se hara com Canton
     canton  = relationship("Canton", back_populates="parroquia")
-    # Mapea la relación entre las clases
-    # Parroquia puede acceder a los establecimientos asociados
-    # por la llave foránea
+    # creacion de la relacion que se hara com Establecimiento
     establecimiento  = relationship("Establecimiento", back_populates="parroquia")
     
+    # representacion que se dara al imprimir el objeto
     def __repr__(self):
         return "Parroquia: codigo=%s - Nombre=%s " % (
                     self.codigo,
                     self.nombre)
-
-# Un establecimiento pertenece a una parroquia.
 
 class Establecimiento(Base):
     __tablename__ = 'establecimiento'
@@ -88,13 +80,13 @@ class Establecimiento(Base):
     acceso = Column(String(100))
     num_estudiantes = Column(Integer)
     num_docentes = Column(Integer)
-    # se agrega la columna parroquia_id como ForeignKey
-    # se hace referencia al id de la entidad parroquia
+
+    # columna con la llave foranea
     parroquia_id = Column(Integer, ForeignKey('parroquia.id'))
-    # Mapea la relación entre las clases
-    # Establecimiento tiene una relación con Parroquias
+    # creacion de la relacion que se hara com Parroquia
     parroquia = relationship("Parroquia", back_populates="establecimiento")
 
+    # representacion que se dara al imprimir el objeto
     def __repr__(self):
         return "Establecimiento: Codigo AMIE=%s - Nombre=%s - Sostenimiento=%s - Tipo educacion=%s - Modalidad=%s - Jornada=%s - Acceso=%s - Numero estudiantes=%d - Numero docentes=%d " % (
                           self.codigo_AMIE, 
@@ -106,5 +98,4 @@ class Establecimiento(Base):
                           self.acceso,
                           self.num_estudiantes,
                           self.num_docentes)
-
 Base.metadata.create_all(engine)

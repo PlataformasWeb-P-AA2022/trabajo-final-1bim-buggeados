@@ -1,13 +1,9 @@
-from operator import and_
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker # se importa el operador and
-from sqlalchemy import or_ 
+from sqlalchemy.orm import sessionmaker 
+from sqlalchemy import or_, and_  #importamos el operador _or
 
-
-# se importa la clase(s) del 
-# archivo genera_tablas
+# se importa la clase(s) del archivo genera_tablas
 from genera_tablas import Canton, Provincia, Parroquia, Establecimiento
-
 # se importa información del archivo configuracion
 from configuration import cadena_base_datos
 # se genera enlace al gestor de base de
@@ -35,9 +31,9 @@ for elemento in establecimientos:
 
 print("Todos los establecimientos ordenados por sostenimiento y tengan código de distrito 11D04.")
 
-establecimientos2 = session.query(Establecimiento.nombre).filter(Establecimiento.cod_establecimiento.like('11D04')).order_by(Establecimiento.sostenimiento)
+establecimientos2 = session.query(Establecimiento.nombre, Establecimiento.sostenimiento).join(Parroquia, Canton).filter(Canton.cod_distrito.like('11D04')).order_by(Establecimiento.sostenimiento)
 
 for elemento in establecimientos2:
-    cadena = "Nombre: %s" %(str(elemento).replace("('",""))
+    cadena = "Nombre: %s || Sostenimiento: %s" %(str(elemento[0]).replace("('",""), str(elemento[1]).replace(")'",""))
     cadena = cadena.replace("',)", "")
     print(cadena)

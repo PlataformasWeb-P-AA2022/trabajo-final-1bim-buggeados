@@ -1,9 +1,8 @@
+# importar librerias y archivos necesarios
 from ast import If
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from genera_tablas import Canton
-# se importa información del archivo configuracion
 from configuration import cadena_base_datos
 from genera_tablas import Provincia
 engine = create_engine(cadena_base_datos)
