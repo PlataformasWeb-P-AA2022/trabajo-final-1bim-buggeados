@@ -1,15 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker 
-from sqlalchemy import or_, and_  #importamos el operador _or
-
-# se importa la clase(s) del archivo genera_tablas
+from sqlalchemy import or_, and_  
 from genera_tablas import Canton, Provincia, Parroquia, Establecimiento
-# se importa información del archivo configuracion
 from configuration import cadena_base_datos
-# se genera enlace al gestor de base de
-# datos
-# para el ejemplo se usa la base de datos
-# sqlite
+
 engine = create_engine(cadena_base_datos)
 
 Session = sessionmaker(bind=engine)

@@ -1,11 +1,7 @@
 from sqlalchemy import create_engine, or_, and_, asc
 from sqlalchemy.orm import sessionmaker 
-# se importan las clases del archivo genera_tablas
 from genera_tablas import *
-
-# se importa la variable del archivo configuration
 from configuration import cadena_base_datos
-# se genera enlace al gestor de base de datos
 engine = create_engine(cadena_base_datos)
 
 Session = sessionmaker(bind=engine)
