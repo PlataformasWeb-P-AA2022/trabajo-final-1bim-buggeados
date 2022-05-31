@@ -10,11 +10,11 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 print("Consulta 1")
-print("Establecimientos con el Código División Política Administrativa Parroquia con valor 110553") 
+print(" Parroquias con jornada matutina y vespertina") 
 
 parroquia = session.query(Parroquia.nombre).join(Establecimiento).filter(Establecimiento.jornada == "Matutina y Vespertina").all()
 for elemento in parroquia:
-    cadena = "Nombre Establecimiento con codgio valor 110553: %s" %(str(elemento).replace("('",""))
+    cadena = "Nombre Provincia: %s" %(str(elemento).replace("('",""))
     cadena = cadena.replace("',)", "")
     print(cadena)
 print(len(parroquia))
